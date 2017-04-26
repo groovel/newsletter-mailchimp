@@ -39,7 +39,7 @@ class MailChimpServiceProvider extends ServiceProvider
     {
         $source = __DIR__.'/config/MailChimpConfig.php';
         $this->publishes([$source => config_path('MailChimpConfig.php')]);
-        $this->mergeConfigFrom($source, 'mailchimp');
+        $this->mergeConfigFrom($source, 'MailChimpConfig');
          
     }
     /**
@@ -62,9 +62,9 @@ class MailChimpServiceProvider extends ServiceProvider
         $app->singleton('mailchimp', function ($app) {
             $config = $app['config'];
             return new MailChimpClient(
-                $config->get('mailchimp.token_user'),
-            	$config->get('mailchimp.base_uri'),
-            	$config->get('mailchimp.version')
+                $config->get('MailChimpConfig.token_user'),
+            	$config->get('MailChimpConfig.base_uri'),
+            	$config->get('MailChimpConfig.version')
              );
         });
         
