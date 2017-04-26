@@ -20,6 +20,8 @@ Groovel\MailChimp\MailChimpServiceProvider::class,
 and alias :
 'MailChimp'=>Groovel\MailChimp\Facades\MailChimp::class
 
+run a php artisan vendor:publish
+
 Then create your account on mailchimp and generate an api token.
 
 Configure the config/MailChimpConfig
