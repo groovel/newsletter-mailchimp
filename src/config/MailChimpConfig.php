@@ -32,7 +32,19 @@ return [
 	|
 	*/
 
-	'version'=>env('version','version'),	
+	'version'=>env('version','version'),
+
+
+	/*|--------------------------------------------------------------------------
+	 |  LIST ID !!!
+	 |--------------------------------------------------------------------------
+	 |
+	 | Here you may specify your list id.
+	 |
+	 |
+	 */
+	
+	'list-id'=>env('list-id','list-id'),
 	
  
 ];

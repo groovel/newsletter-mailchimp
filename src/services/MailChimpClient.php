@@ -19,13 +19,15 @@ class MailChimpClient
     private static $client;
     
     private static $api_version;
+    
+    private static $listid;
 
     /**
      * @param $api_token
      * @param $base_uri
      * @param array $options Accept same options as Guzzle constructor
      */
-    public function __construct($api_token,$base_uri,$version, array $config = [])
+    public function __construct($api_token,$base_uri,$version,$list_id ,array $config = [])
     {
         self::$api_version=$version;
     	$config = array_merge($config, [
@@ -33,6 +35,7 @@ class MailChimpClient
             'auth'     => ['apikey', $api_token],
         ]);
 
+    	self::$listid=$list_id;
         self::$client = new \GuzzleHttp\Client($config);
     }
 
@@ -77,6 +80,14 @@ class MailChimpClient
     	return self::getData('/lists/'.$listid);
     }
     
+    /**
+     * get list for a given list id
+     * @param $listid
+     * @return mixed
+     */
+    public static function getList(){
+    	return self::getData('/lists/'.self::$listid);
+    }
     
     /**
      * get list of emails members for a given list id
@@ -85,6 +96,10 @@ class MailChimpClient
      */
     public static function getMembersEmail($listid){
     	return self::getData('/lists/'.$listid.'/members');
+    }
+    
+    public static function getMembersEmail(){
+    	return self::getData('/lists/'.self::$listid.'/members');
     }
     
     
@@ -106,6 +121,18 @@ class MailChimpClient
     	
     }
     
+    public static function subscribeNewUser($email,$confirm = false){
+    	$data = [
+    			'email_address' => $email,
+    			'status' => ($confirm ? 'pending' : 'subscribed'),
+    	];
+    	if (!empty($merge_fields)) $data['merge_fields'] = $merge_fields;
+    	$action = self::$api_version.'/lists/'.self::$listid.'/members/';
+    
+    	return self::send($action, 'POST', $data);
+    	 
+    }
+    
     /**
      * get a user from a given listid with a given email
      * @param $email
@@ -117,6 +144,12 @@ class MailChimpClient
     {
     	$action =  "lists/".$listid."/members/" . md5($email);
    		return self::getData($action);
+    }
+    
+    public function getMember($email)
+    {
+    	$action =  "lists/".self::$listid."/members/" . md5($email);
+    	return self::getData($action);
     }
     
     /**
@@ -136,6 +169,17 @@ class MailChimpClient
     	 
     }
     
+    public static function unsubscribeUser($email){
+    	$data = [
+    			'status' => 'unsubscribed'
+    	];
+    	if (!empty($merge_fields)) $data['merge_fields'] = $merge_fields;
+    	$action = self::$api_version.'/lists/'.self::$listid.'/members/'. md5($email);
+    
+    	return self::send($action, 'PATCH', $data);
+    
+    }
+    
     /**
      * unsubscribe new user to a given listid
      * @param $email
@@ -148,6 +192,17 @@ class MailChimpClient
     	];
     	if (!empty($merge_fields)) $data['merge_fields'] = $merge_fields;
     	$action = self::$api_version.'/lists/'.$listid.'/members/'. md5($email);
+    
+    	return self::send($action, 'PATCH', $data);
+    
+    }
+    
+    public static function cleanUser($email){
+    	$data = [
+    			'status' => 'cleaned'
+    	];
+    	if (!empty($merge_fields)) $data['merge_fields'] = $merge_fields;
+    	$action = self::$api_version.'/lists/'.self::$listid.'/members/'. md5($email);
     
     	return self::send($action, 'PATCH', $data);
     
@@ -172,6 +227,17 @@ class MailChimpClient
     	return self::send($action, 'PATCH', $data);
     }
     
+    public static function updateUser($email,$status)
+    {
+    	$data = [
+    			'status' => $status
+    	];
+    	if (!empty($merge_fields)) $data['merge_fields'] = $merge_fields;
+    	$action = self::$api_version.'/lists/'.self::$listid.'/members/'. md5($email);
+    
+    	return self::send($action, 'PATCH', $data);
+    }
+    
     
     /**
      * delete a user to a given listid to a given email
@@ -183,6 +249,13 @@ class MailChimpClient
     {
      	$email=md5($email);
     	$action = self::$api_version.'/lists/'.$listid.'/members/'. $email;
+    	return self::send($action, 'DELETE', []);
+    }
+    
+    public static function deleteUser($email)
+    {
+    	$email=md5($email);
+    	$action = self::$api_version.'/lists/'.self::$listid.'/members/'. $email;
     	return self::send($action, 'DELETE', []);
     }
 

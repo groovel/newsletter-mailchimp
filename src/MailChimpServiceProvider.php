@@ -64,7 +64,8 @@ class MailChimpServiceProvider extends ServiceProvider
             return new MailChimpClient(
                 $config->get('MailChimpConfig.token_user'),
             	$config->get('MailChimpConfig.base_uri'),
-            	$config->get('MailChimpConfig.version')
+            	$config->get('MailChimpConfig.version'),
+            	$config->get('MailChimpConfig.list_id')
              );
         });
         
