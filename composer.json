@@ -2,7 +2,7 @@
 	"name": "groovel/newsletter-mailchimp",
     "description": "newsletter module mailchimp",
     "keywords": ["mailchimp","framework","php","laravel"],
-    "license": "mit",
+    "license": "MIT",
     "homepage": "http://www.groovelcms.com",
     "authors": [
         {
